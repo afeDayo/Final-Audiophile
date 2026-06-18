@@ -45,7 +45,7 @@ const products = [
       "https://res.cloudinary.com/di68k4zba/image/upload/v1781693311/GALLERYTHREE_FOR_HEADSETONE_cz7psa.png",
     ],
 
-    isNew: true,
+    isNewArrival: true,
   },
 
   // product 2
@@ -71,7 +71,7 @@ const products = [
       "https://res.cloudinary.com/di68k4zba/image/upload/v1781694407/GALLERYTHREE_FOR_HEADSETTWO_ys2u4x.png",
     ],
 
-    isNew: false,
+    isNewArrival: false,
   },
 
   // product 3
@@ -97,7 +97,7 @@ const products = [
       "https://res.cloudinary.com/di68k4zba/image/upload/v1781694784/GALLERYTHREE_FOR_HEADSETTHREE_ekgnrp.png",
     ],
 
-    isNew: false,
+    isNewArrival: false,
   },
 
   // product 4
@@ -124,7 +124,7 @@ const products = [
       "https://res.cloudinary.com/di68k4zba/image/upload/v1781695607/GALLERYTHREE_FOR_SPEAKERONE_yrfgud.png",
     ],
 
-    isNew: true,
+    isNewArrival: true,
   },
   // product 5
   {
@@ -150,7 +150,7 @@ const products = [
       "https://res.cloudinary.com/di68k4zba/image/upload/v1781696216/GALLERYTHREE_FOR_SPEAKERTHREE_s6ug4j.png",
     ],
 
-    isNew: false,
+    isNewArrival: false,
   },
   // product 6
   {
@@ -176,7 +176,7 @@ const products = [
       "https://res.cloudinary.com/di68k4zba/image/upload/v1781696903/GALLERYTHREE_FOR_EARPHONEONE_f4v1ej.png",
     ],
 
-    isNew: true,
+    isNewArrival: true,
   },
 ];
 

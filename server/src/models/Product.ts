@@ -64,7 +64,7 @@ const productSchema = new Schema<IProduct>(
     gallery: [{ type: String }],
 
     //   Whether to show the "New Product" badge on the product
-    isNew: {
+    isNewArrival: {
       type: Boolean,
       default: false,
     },
