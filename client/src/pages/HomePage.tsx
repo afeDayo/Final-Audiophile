@@ -5,8 +5,6 @@ import { Link } from "react-router-dom";
 import Man from "../components/Man";
 import { useStore } from "../context/StoreContext";
 import RollerLoader from "../components/RollerLoader";
-import Cart from "../components/Cart";
-import ThankYou from "../components/ThankYou";
 
 const categoryIMGone =
   "https://res.cloudinary.com/di68k4zba/image/upload/v1780583283/categoryIMG-1_tn8aqw.png";

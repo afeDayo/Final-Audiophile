@@ -4,7 +4,7 @@
 // "Providers" wrap the app so all child components can access shared data (like the cart or the logged-in user).
 // React Router handles navigation - it changes what page renders based on the URL, without full page reloads (SPA behaviour)
 
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 

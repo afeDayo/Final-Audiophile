@@ -6,8 +6,8 @@ import { MdChevronRight } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { useStore } from "../context/StoreContext";
 import { useAuth } from "../context/AuthContext";
-import { MdKeyboardArrowRight, MdKeyboardArrowDown } from "react-icons/md";
-import { FiUser, FiSettings, FiLogOut, FiShoppingBag } from "react-icons/fi";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { FiSettings, FiLogOut, FiShoppingBag } from "react-icons/fi";
 import { MdDashboard } from "react-icons/md";
 import "../App.css";
 

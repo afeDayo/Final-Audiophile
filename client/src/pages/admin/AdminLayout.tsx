@@ -14,7 +14,6 @@ import {
   MdPeople,
   MdLogout,
   MdMenu,
-  MdClose,
 } from "react-icons/md";
 import { useAuth } from "../../context/AuthContext";
 
