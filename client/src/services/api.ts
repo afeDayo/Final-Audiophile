@@ -10,7 +10,7 @@ import axios from "axios";
 // The base URL is read from the Vite environment variable
 // in development: http://localHost:5000/api
 // in production: your Render/Audiophile.render
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const BASE_URL = import.meta.env.VITE_API_URL || "https://final-audiophile.onrender.com/api";
 
 // create an axios instance with default settings
 // all requests made with this instance will use these defaults
