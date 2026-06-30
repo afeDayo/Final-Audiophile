@@ -16,6 +16,7 @@ import User from "../models/User";
 import jwt from "jsonwebtoken";
 import { AuthRequest } from "../types/indexServer";
 import { deleteImage, uploadImage } from "../config/cloudinary";
+import { sendWelcomeEmail } from "../utils/emailService";
 
 //Helper: generate a JWT token for a user
 //JWT = JSON web token - a signed string that proves who the user is
@@ -52,6 +53,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // create the user - the pre-save hook in User.ts will hash the password
     const user = await User.create({ name, email, password });
+
+    // Send welcome email — non-blocking
+    sendWelcomeEmail(user.name, user.email);
 
     // Respond with user data and a token
     res.status(201).json({

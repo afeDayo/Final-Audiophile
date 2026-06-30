@@ -1,10 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useStore } from "../context/StoreContext";
 
 const heroImg =
   "https://res.cloudinary.com/di68k4zba/image/upload/v1780574924/heroImg_l0vw5n.svg";
 
 const HeroSection: React.FC = () => {
+  const { products } = useStore();
+
+  // Find the featured product - the XX99 Mark II
+  const featuredProduct = products.find((product) => {
+    return product.name.includes("XX99 Mark II Headphones");
+  });
+
   return (
     <header className="bg-[#131313] relative overflow-hidden">
       <div className="px-6 sm:px-[clamp(1rem,11.40vw,200px)]">
@@ -26,11 +34,20 @@ const HeroSection: React.FC = () => {
             </div>
 
             <div className="md:flex-row items-center md:gap-5 flex-col gap-2 flex">
-              <Link to="/headphones">
-                <button className="bg-[#D87D4A] text-white font-bold text-[13px] tracking-[1px] uppercase px-8 py-4 hover:bg-[#FBAF85] transition-colors duration-200 cursor-pointer">
-                  See Product
-                </button>
-              </Link>
+              {featuredProduct ? (
+                <Link to={`/product/${featuredProduct._id}`}>
+                  <button className="bg-[#D87D4A] text-white font-bold text-[13px] tracking-[1px] uppercase px-8 py-4 hover:bg-[#FBAF85] transition-colors duration-200 cursor-pointer">
+                    See Product
+                  </button>
+                </Link>
+              ) : (
+                <Link to="/headphones">
+                  <button className="bg-[#D87D4A] text-white font-bold text-[13px] tracking-[1px] uppercase px-8 py-4 hover:bg-[#FBAF85] transition-colors duration-200 cursor-pointer">
+                    See Product
+                  </button>
+                </Link>
+              )}
+
               <Link to="/register">
                 <button className="text-[16px] font-bold text-white tracking-[1px] hover:text-[#D87D4A] transition-colors uppercase px-11 py-4 border border-[#FFFFFF]">
                   Sign Up

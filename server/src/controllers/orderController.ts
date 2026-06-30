@@ -10,6 +10,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { AuthRequest } from "../types/indexServer";
 import Order from "../models/Order";
+import { sendOrderConfirmationEmail } from "../utils/emailService";
 
 // --- CREATE ORDER ---
 // POST /api/orders
@@ -90,8 +91,17 @@ export const createOrder = async (
       orderData.userId = authReq.user._id;
     }
 
+    // 🔍 TEMPORARY DEBUG — remove after confirming it works
+    console.log(
+      "Order userId attached:",
+      orderData.userId || "NONE — guest order",
+    );
+
     const order = new Order(orderData);
     const createdOrder = await order.save();
+
+    // Send confirmation email — runs async, won't delay the API response
+    sendOrderConfirmationEmail(createdOrder as any);
 
     res.status(201).json(createdOrder);
   } catch (error: any) {

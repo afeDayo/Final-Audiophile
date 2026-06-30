@@ -33,7 +33,7 @@ export interface CartTotals {
   subtotal: number;
   shipping: number;
   vat: number;
-  grandtotal: number;
+  grandTotal: number;
 }
 
 // ---- Users -----

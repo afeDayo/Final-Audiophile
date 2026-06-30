@@ -9,7 +9,7 @@ const manMobile =
 const Man: React.FC = () => {
   return (
     <section className="px-6 sm:px-[clamp(1rem,11.40vw,200px)] my-24 md:my-32 lg:my-40">
-      <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-31.25">
+      <div className="flex flex-col lg:flex-row items-center gap-10 lg:justify-between">
         <div className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left gap-8 max-w-111.25">
           <h2 className="font-bold text-[28px] md:text-[40px] leading-tight tracking-[1.5px] md:tracking-[1.43px] uppercase text-black">
             Bringing you the <span className="text-[#D87D4A]">best</span> audio
