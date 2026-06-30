@@ -441,7 +441,7 @@ const buildWelcomeEmailHTML = (name: string): string => {
                 </tr>
               </table>
 
-              <a href="${process.env.CLIENT_URL || "https://final-audiophile.vercel.app/"}"
+              <a href="${process.env.CLIENT_URL || "https://final-audiophile-three.vercel.app/"}"
                 style="
                   display:inline-block;background:#D87D4A;color:#fff;
                   font-size:13px;font-weight:800;letter-spacing:1px;
