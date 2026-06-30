@@ -40,7 +40,7 @@ const LoginPage: React.FC = () => {
     <div className="min-h-screen bg-[#FFFFFF] md:grid md:grid-cols-2">
       {/* ================= LEFT: Form column ================= */}
       <div className="flex items-center justify-center px-5 py-10 sm:px-8 md:px-10 lg:px-16">
-        <div className="w-full max-w-[467px]">
+        <div className="w-full max-w-116.75">
           {/* Logo */}
           <div className="flex items-center justify-center mb-10 md:mb-16">
             <Link to="/">
