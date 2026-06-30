@@ -1,43 +1,54 @@
 // ============================================================
 // utils/emailService.ts
-// Handles all outgoing emails using Nodemailer + Gmail SMTP.
+// Handles all outgoing emails using the Brevo API (formerly Sendinblue).
 //
-// Unlike Resend's free tier, Gmail SMTP has NO restriction on
-// who you can send to — any recipient works immediately, with
-// no domain verification required. This is ideal for student
-// projects and demos.
+// Brevo sends over HTTPS (port 443), same as SendGrid/Resend —
+// which is why it works on Render's free tier where outbound raw
+// SMTP (port 587/465) is blocked. Nodemailer + Gmail SMTP failed
+// with ETIMEDOUT/ESOCKET errors for exactly that networking reason.
+//
+// Brevo's free tier gives 300 emails/day forever — the most
+// generous of the free HTTPS-based providers — and only requires
+// verifying a single SENDER EMAIL (no DNS records, no domain).
 //
 // Emails sent:
 // 1. Order confirmation — sent to customer after every purchase
 // 2. Welcome email      — sent when a new user registers
 // ============================================================
 
-import nodemailer from "nodemailer";
+// @ts-ignore
+import SibApiV3Sdk from "sib-api-v3-sdk";
 import { IOrder } from "../types/indexServer";
 
 // ─────────────────────────────────────────────
-// TRANSPORTER SETUP
-// A "transporter" is Nodemailer's term for the configured
-// connection to an SMTP server — in our case, Gmail.
+// CLIENT SETUP
+// Brevo's SDK uses a slightly different pattern than
+// SendGrid/Resend — you configure the default API client
+// globally, then create a TransactionalEmailsApi instance.
 // ─────────────────────────────────────────────
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.gmail.com",
-  port: Number(process.env.EMAIL_PORT) || 587,
-  secure: false, // true for port 465, false for port 587 (TLS upgrade)
-  auth: {
-    user: process.env.EMAIL_USER, // Your Gmail address
-    pass: process.env.EMAIL_PASS, // Your 16-character Gmail App Password
-  },
-});
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+const apiKeyAuth = defaultClient.authentications["api-key"];
+apiKeyAuth.apiKey = process.env.BREVO_API_KEY as string;
 
-// The "from" address shown to recipients
-const FROM_ADDRESS =
-  process.env.EMAIL_FROM || `Audiophile Nigeria <${process.env.EMAIL_USER}>`;
+const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
+// The verified sender email — MUST match exactly what you verified
+// in Brevo under Senders, Domains & Dedicated IPs → Senders
+const SENDER_EMAIL = process.env.EMAIL_FROM || "your.verified.email@gmail.com";
+const SENDER_NAME = "Audiophile Nigeria";
+
+// ─────────────────────────────────────────────
+// HELPER: Format a number as currency
+// e.g. 2999 → "$2,999"
+// ─────────────────────────────────────────────
 const formatCurrency = (amount: number): string => {
   return `$${amount.toLocaleString("en-US")}`;
 };
 
+// ─────────────────────────────────────────────
+// HELPER: Format a date string nicely
+// e.g. "2024-01-15T..." → "January 15, 2024"
+// ─────────────────────────────────────────────
 const formatDate = (dateStr: string | Date): string => {
   return new Date(dateStr).toLocaleDateString("en-US", {
     year: "numeric",
@@ -46,6 +57,9 @@ const formatDate = (dateStr: string | Date): string => {
   });
 };
 
+// ─────────────────────────────────────────────
+// HELPER: Status badge color for the email
+// ─────────────────────────────────────────────
 const getStatusColor = (status: string): string => {
   const colors: Record<string, string> = {
     pending: "#F59E0B",
@@ -57,6 +71,10 @@ const getStatusColor = (status: string): string => {
   return colors[status] || "#6B7280";
 };
 
+// ─────────────────────────────────────────────
+// TEMPLATE: Order Confirmation Email HTML
+// (Same branded template used throughout this project)
+// ─────────────────────────────────────────────
 const buildOrderConfirmationHTML = (order: IOrder): string => {
   const itemRows = order.cartItems
     .map(
@@ -220,7 +238,7 @@ const buildOrderConfirmationHTML = (order: IOrder): string => {
           </tr>
           <tr>
             <td style="padding:0 40px 32px;text-align:center;">
-              <a href="${process.env.CLIENT_URL || "https://final-audiophile-three.vercel.app/"}/orders"
+              <a href="${process.env.CLIENT_URL || "http://localhost:5173"}/orders"
                 style="display:inline-block;background:#D87D4A;color:#ffffff;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:16px 40px;border-radius:4px;">
                 View My Orders
               </a>
@@ -249,6 +267,10 @@ const buildOrderConfirmationHTML = (order: IOrder): string => {
   `;
 };
 
+// ─────────────────────────────────────────────
+// TEMPLATE: Welcome Email HTML
+// (Sent when a new user registers an account)
+// ─────────────────────────────────────────────
 const buildWelcomeEmailHTML = (name: string): string => {
   const firstName = name.split(" ")[0];
   return `
@@ -313,43 +335,60 @@ const buildWelcomeEmailHTML = (name: string): string => {
 };
 
 // ═══════════════════════════════════════════════
-// PUBLIC FUNCTIONS — same names/signatures as the Resend
-// version, so your controllers don't need any changes.
+// PUBLIC FUNCTIONS — same names/signatures as before,
+// so your controllers (userController.ts, orderController.ts)
+// need ZERO changes. Only this file and your .env change.
 // ═══════════════════════════════════════════════
 
+// Send order confirmation email after a successful purchase
 export const sendOrderConfirmationEmail = async (
   order: IOrder,
 ): Promise<void> => {
   try {
-    const info = await transporter.sendMail({
-      from: FROM_ADDRESS,
-      to: order.customerInfo.email, // Works for ANY recipient — no restriction
-      subject: `✅ Order Confirmed — ${order.orderId} | Audiophile Nigeria`,
-      html: buildOrderConfirmationHTML(order),
-    });
+    // Brevo's SDK uses a "SendSmtpEmail" object to describe the message
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+    sendSmtpEmail.sender = { name: SENDER_NAME, email: SENDER_EMAIL };
+    sendSmtpEmail.to = [{ email: order.customerInfo.email }]; // Works for ANY recipient
+    sendSmtpEmail.subject = `✅ Order Confirmed — ${order.orderId} | Audiophile Nigeria`;
+    sendSmtpEmail.htmlContent = buildOrderConfirmationHTML(order);
+
+    const response = await emailApi.sendTransacEmail(sendSmtpEmail);
 
     console.log(
-      `✅ Order confirmation email sent — Message ID: ${info.messageId}`,
+      `✅ Order confirmation email sent to ${order.customerInfo.email} — Message ID: ${response.messageId}`,
     );
-  } catch (err) {
-    console.error("❌ Nodemailer order confirmation error:", err);
+  } catch (err: any) {
+    // Brevo errors include detail in err.response?.body — log it fully
+    console.error(
+      "❌ Brevo order confirmation error:",
+      err.response?.body || err.message || err,
+    );
   }
 };
 
+// Send welcome email when a new user registers
 export const sendWelcomeEmail = async (
   name: string,
   email: string,
 ): Promise<void> => {
   try {
-    const info = await transporter.sendMail({
-      from: FROM_ADDRESS,
-      to: email, // Works for ANY recipient — no restriction
-      subject: `🎧 Welcome to Audiophile Nigeria, ${name.split(" ")[0]}!`,
-      html: buildWelcomeEmailHTML(name),
-    });
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
-    console.log(`✅ Welcome email sent — Message ID: ${info.messageId}`);
-  } catch (err) {
-    console.error("❌ Nodemailer welcome email error:", err);
+    sendSmtpEmail.sender = { name: SENDER_NAME, email: SENDER_EMAIL };
+    sendSmtpEmail.to = [{ email }]; // Works for ANY recipient
+    sendSmtpEmail.subject = `🎧 Welcome to Audiophile Nigeria, ${name.split(" ")[0]}!`;
+    sendSmtpEmail.htmlContent = buildWelcomeEmailHTML(name);
+
+    const response = await emailApi.sendTransacEmail(sendSmtpEmail);
+
+    console.log(
+      `✅ Welcome email sent to ${email} — Message ID: ${response.messageId}`,
+    );
+  } catch (err: any) {
+    console.error(
+      "❌ Brevo welcome email error:",
+      err.response?.body || err.message || err,
+    );
   }
 };
