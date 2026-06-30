@@ -300,7 +300,7 @@ const ProfilePage: React.FC = () => {
                 label="New Password"
                 name="password"
                 type="password"
-                placeholder="Min 6 characters"
+                placeholder="Min 8 characters"
                 error={errors.password}
               />
               <Field
