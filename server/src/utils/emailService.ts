@@ -220,7 +220,7 @@ const buildOrderConfirmationHTML = (order: IOrder): string => {
           </tr>
           <tr>
             <td style="padding:0 40px 32px;text-align:center;">
-              <a href="${process.env.CLIENT_URL || "http://localhost:5173"}/orders"
+              <a href="${process.env.CLIENT_URL || "https://final-audiophile-three.vercel.app/"}/orders"
                 style="display:inline-block;background:#D87D4A;color:#ffffff;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:16px 40px;border-radius:4px;">
                 View My Orders
               </a>
