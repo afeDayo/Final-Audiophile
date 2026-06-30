@@ -111,7 +111,7 @@ const RegisterPage: React.FC = () => {
       name: "name",
       type: "text",
       placeHolder: "Samuel Ikeyina",
-      icon: <FiUser className="text-black/30 text-base" />,
+      icon: <FiUser className="text-black/30 text-base shrink-0" />,
     },
 
     {
@@ -119,7 +119,7 @@ const RegisterPage: React.FC = () => {
       name: "email",
       type: "email",
       placeHolder: "samuelikeyina@gmail.com",
-      icon: <FiMail className="text-black/30 text-base" />,
+      icon: <FiMail className="text-black/30 text-base shrink-0" />,
     },
 
     {
@@ -127,7 +127,7 @@ const RegisterPage: React.FC = () => {
       name: "password",
       type: showPassword ? "text" : "password",
       placeHolder: "Min 8 characters",
-      icon: <FiLock className="text-black/30 text-base" />,
+      icon: <FiLock className="text-black/30 text-base shrink-0" />,
       rightIcon: showPassword ? (
         <FiEyeOff className="text-black/30 text-base" />
       ) : (
@@ -141,7 +141,7 @@ const RegisterPage: React.FC = () => {
       name: "confirmPassword",
       type: showConfirmPassword ? "text" : "password",
       placeHolder: "Repeat your password",
-      icon: <FiLock className="text-black/30 text-base" />,
+      icon: <FiLock className="text-black/30 text-base shrink-0" />,
       rightIcon: showConfirmPassword ? (
         <FiEyeOff className="text-black/30 text-base" />
       ) : (
@@ -152,27 +152,32 @@ const RegisterPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] grid grid-cols-2">
-      <div className="flex items-center justify-center">
-        <div className="w-full max-w-116.75">
-          <div className="flex items-center justify-center mb-16">
+    <div className="min-h-screen bg-[#FFFFFF] md:grid md:grid-cols-2">
+      {/* ================= LEFT: Form column ================= */}
+      <div className="flex items-center justify-center px-5 py-10 sm:px-8 md:px-10 lg:px-16">
+        <div className="w-full max-w-[467px]">
+          {/* Logo */}
+          <div className="flex items-center justify-center mb-10 md:mb-16">
             <Link to="/">
-              <img src={blackLogo} alt="" />
+              <img
+                src={blackLogo}
+                alt="Audiophile"
+                className="h-7 w-auto sm:h-8"
+              />
             </Link>
           </div>
 
-          <div className="bg-white rounded-2xl p-8 md:p-0">
-            <h1 className="font-bold text-[28px] tracking-[-3%] text-black mb-2">
+          <div className="bg-white rounded-2xl">
+            <h1 className="font-bold text-[22px] sm:text-[26px] md:text-[28px] tracking-[-0.03em] text-black mb-2 leading-tight">
               Hear Everything. Miss Nothing.
             </h1>
-            <p className="text-sm text-black/50 mb-8 md:text-[18px]">
+            <p className="text-sm text-black/50 mb-6 sm:mb-8 md:text-[16px] lg:text-[18px]">
               Create your account and step into a world of pure sound.
             </p>
 
             <form
-              action=""
               onSubmit={handleSubmit}
-              className="flex flex-col gap-6"
+              className="flex flex-col gap-5 sm:gap-6"
             >
               {fields.map(
                 ({
@@ -186,7 +191,7 @@ const RegisterPage: React.FC = () => {
                 }) => {
                   return (
                     <div key={name} className="flex flex-col gap-2">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <label
                           htmlFor={name}
                           className={`text-xs font-bold ${errors[name] ? "text-red-500" : "text-black"}`}
@@ -194,14 +199,14 @@ const RegisterPage: React.FC = () => {
                           {label}
                         </label>
                         {errors[name] && (
-                          <span className="text-xs text-red-500">
+                          <span className="text-[11px] sm:text-xs text-red-500 text-right">
                             {errors[name]}
                           </span>
                         )}
                       </div>
 
                       <div
-                        className={`flex items-center gap-3 w-full border rounded-lg px-6 py-4 transition-colors focus-within:border-[#D87D4A ${errors[name] ? "border-red-500" : "border-[#CFCFCF]"}]`}
+                        className={`flex items-center gap-3 w-full border rounded-lg px-4 sm:px-6 py-3.5 sm:py-4 transition-colors focus-within:border-[#D87D4A] ${errors[name] ? "border-red-500" : "border-[#CFCFCF]"}`}
                       >
                         {icon}
                         <input
@@ -211,15 +216,33 @@ const RegisterPage: React.FC = () => {
                           value={formData[name]}
                           onChange={handleChange}
                           placeholder={placeHolder}
-                          className="flex-1 text-sm font-bold text-black placeholder:text-black/40 outline-none bg-transparent"
+                          autoComplete={
+                            name === "email"
+                              ? "email"
+                              : name === "password"
+                                ? "new-password"
+                                : name === "confirmPassword"
+                                  ? "new-password"
+                                  : "name"
+                          }
+                          className="flex-1 min-w-0 text-sm font-bold text-black placeholder:text-black/40 outline-none bg-transparent"
                         />
 
                         {rightIcon && (
                           <button
                             type="button"
                             onClick={onRightIconClick}
-                            className="text-black/30 hover:text-[#D87D4A] transition-colors"
+                            className="text-black/30 hover:text-[#D87D4A] transition-colors shrink-0"
                             tabIndex={-1}
+                            aria-label={
+                              name === "password"
+                                ? showPassword
+                                  ? "Hide password"
+                                  : "Show password"
+                                : showConfirmPassword
+                                  ? "Hide password"
+                                  : "Show password"
+                            }
                           >
                             {rightIcon}
                           </button>
@@ -262,10 +285,9 @@ const RegisterPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ================================ */}
-
-      <div className="hidden md:flex justify-end">
-        <img src={authIMG} alt="" />
+      {/* ================= RIGHT: Image column (desktop/tablet only) ================= */}
+      <div className="hidden md:flex md:items-stretch md:justify-end overflow-hidden">
+        <img src={authIMG} alt="" className="h-full w-full object-cover" />
       </div>
     </div>
   );

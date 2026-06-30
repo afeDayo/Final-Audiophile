@@ -37,28 +37,34 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] grid grid-cols-2">
-      <div className="flex items-center justify-center">
-        <div className="w-full max-w-116.75">
-          <div className="flex items-center justify-center mb-16">
+    <div className="min-h-screen bg-[#FFFFFF] md:grid md:grid-cols-2">
+      {/* ================= LEFT: Form column ================= */}
+      <div className="flex items-center justify-center px-5 py-10 sm:px-8 md:px-10 lg:px-16">
+        <div className="w-full max-w-[467px]">
+          {/* Logo */}
+          <div className="flex items-center justify-center mb-10 md:mb-16">
             <Link to="/">
-              <img src={blackLogo} alt="" />
+              <img
+                src={blackLogo}
+                alt="Audiophile"
+                className="h-7 w-auto sm:h-8"
+              />
             </Link>
           </div>
 
-          <div className="bg-white rounded-2xl p-8 md:p-0">
-            <h1 className="font-bold text-[28px] tracking-[-3%] uppercase text-black mb-2">
+          <div className="bg-white rounded-2xl">
+            <h1 className="font-bold text-[22px] sm:text-[26px] md:text-[28px] tracking-[-0.03em] uppercase text-black mb-2 leading-tight">
               Welcome Back
             </h1>
-            <p className="text-sm text-black/50 mb-8 md:text-[18px]">
+            <p className="text-sm text-black/50 mb-6 sm:mb-8 md:text-[16px] lg:text-[18px]">
               Your sound. Your space. Pick up right where you left off.
             </p>
 
             <form
-              action=""
               onSubmit={handleSubmit}
-              className="flex flex-col gap-6"
+              className="flex flex-col gap-5 sm:gap-6"
             >
+              {/* Email field */}
               <div className="flex flex-col gap-2 text-start">
                 <label
                   htmlFor="email"
@@ -67,22 +73,23 @@ const LoginPage: React.FC = () => {
                   Email Address
                 </label>
 
-                <div className="flex items-center gap-3 w-full border border-[#CFCFCF] rounded-lg px-6 py-4 transition-colors focus-within:border-[#D87D4A]">
+                <div className="flex items-center gap-3 w-full border border-[#CFCFCF] rounded-lg px-4 sm:px-6 py-3.5 sm:py-4 transition-colors focus-within:border-[#D87D4A]">
                   <FiMail className="text-black/30 text-base shrink-0" />
                   <input
                     id="email"
-                    type="text"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
                     value={email}
-                    onChange={(event) => {
-                      return setEmail(event.target.value);
-                    }}
+                    onChange={(event) => setEmail(event.target.value)}
                     placeholder="samuelikeyina@gmail.com"
                     required
-                    className="flex-1 text-sm font-bold text-black placeholder:text-black/40 outline-none bg-transparent"
+                    className="flex-1 min-w-0 text-sm font-bold text-black placeholder:text-black/40 outline-none bg-transparent"
                   />
                 </div>
               </div>
 
+              {/* Password field */}
               <div className="flex flex-col gap-2 text-start">
                 <label
                   htmlFor="password"
@@ -91,25 +98,27 @@ const LoginPage: React.FC = () => {
                   Password
                 </label>
 
-                <div className="flex items-center gap-3 w-full border border-[#CFCFCF] rounded-lg px-6 py-4 transition-colors focus-within:border-[#D87D4A]">
+                <div className="flex items-center gap-3 w-full border border-[#CFCFCF] rounded-lg px-4 sm:px-6 py-3.5 sm:py-4 transition-colors focus-within:border-[#D87D4A]">
                   <FiLock className="text-black/30 text-base shrink-0" />
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
                     value={password}
-                    onChange={(event) => {
-                      return setPassword(event.target.value);
-                    }}
+                    onChange={(event) => setPassword(event.target.value)}
                     placeholder="Enter your password"
                     required
-                    className="flex-1 text-sm font-bold text-black placeholder:text-black/40 outline-none bg-transparent"
+                    className="flex-1 min-w-0 text-sm font-bold text-black placeholder:text-black/40 outline-none bg-transparent"
                   />
 
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="text-black/30 hover:text-[#D87D4A] transition-colors"
+                    className="text-black/30 hover:text-[#D87D4A] transition-colors shrink-0"
                     tabIndex={-1}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? (
                       <FiEyeOff className="text-base" />
@@ -152,10 +161,9 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ====================== */}
-
-      <div className="hidden md:flex justify-end">
-        <img src={authIMG} alt="" />
+      {/* ================= RIGHT: Image column (desktop/tablet only) ================= */}
+      <div className="hidden md:flex md:items-stretch md:justify-end overflow-hidden">
+        <img src={authIMG} alt="" className="h-full w-full object-cover" />
       </div>
     </div>
   );
